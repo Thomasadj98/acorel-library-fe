@@ -1,12 +1,7 @@
 'use client'
 
 import {Dispatch, JSX, SetStateAction, useEffect, useState} from "react";
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-}
+import { Book } from '@/app/models/model';
 
 export default function BookList() {
   const [books, setBooks]: [Book[], Dispatch<SetStateAction<Book[]>>] = useState<Book[]>([]);
@@ -31,13 +26,16 @@ export default function BookList() {
 
   return (
     <div className="grid grid-cols-4 gap-4 w-full">
-      {books && books.map((book: Book, index): JSX.Element => (
-        <div key={index} className="p-4 bg-blue-900 rounded">
-          <h1 className="text-lg font-bold">{book.title}</h1>
-          <p className="text-sm">{book.author}</p>
+      {books && books.map((book: Book, index: number): JSX.Element => (
+        <div aria-description={book.id.toString()} key={index} className="w-full p-4 bg-gray-100 border-1 rounded relative flex justify-between items-center flex-col">
+          <div className={`h-6 w-6 rounded-2xl absolute right-4 bottom-4 ${book.available ? 'bg-green-600' : 'bg-red-600'}`}></div>
+          <img src={book.bookCover} alt={book.title} className="w-1/2 h-auto object-cover rounded mb-4"/>
+          <div className='w-full'>
+            <p className="text-sm font-light">{book.author}</p>
+            <h1 className="text-lg min-h-14 font-bold">{book.title}</h1>
+          </div>
         </div>
       ))}
     </div>
-
   )
 }
