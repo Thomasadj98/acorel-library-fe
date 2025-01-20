@@ -1,147 +1,120 @@
-import {useState} from "react";
-
-interface Book {
-  title: string;
-  author: string;
-  bookCover: File | null;
-}
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {deleteBookById, fetchBookById, saveBook} from '@/app/api/apiEndpointsBook';
+import {AdminEditState, NewBook} from '@/app/models/model';
 
 interface AdminBookFormProps {
-  setAdminState: (state: string) => void;
+  setAdminState: Dispatch<SetStateAction<AdminEditState>>;
+  bookId?: number;
+  resetBookId?: () => void;
 }
 
-export default function AdminBookForm({ setAdminState }: AdminBookFormProps) {
-  const [book, setBook] = useState<Book>({ title: '', author: '', bookCover: null });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+export default function AdminBookForm({setAdminState, bookId, resetBookId}: AdminBookFormProps) {
+  const [book, setBook] = useState<NewBook>({
+    title: '',
+    author: '',
+    bookCover: '',
+    recommendedByName: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  useEffect(() => {
+    if (bookId) {
+      fetchBookById(bookId)
+        .then((data) => setBook(data))
+        .catch((err) => console.error(err));
+    }
+  }, [bookId]);
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setBook((prevBook) => ({
-      ...prevBook,
-      [name]: value,
-    }));
-  };
-
-  // Handle file input for bookCover
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setBook((prevBook) => ({
-        ...prevBook,
-        bookCover: e.target.files[0],
-      }));
-    }
+    setBook((prev) => ({ ...prev, [name]: value.trim() }));
   };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = new FormData();
-    formData.append('title', book.title);
-    formData.append('author', book.author);
-    if (book.bookCover) {
-      formData.append('bookCover', book.bookCover);
-    }
-
+    setStatus('submitting');
     try {
-      // Make an API request to add the book (upload the form data)
-      const response = await fetch('http://localhost:8080/books', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to add book. Status: ${response.status}`);
-      }
-
-      setSuccess(true);
+      await saveBook(book, bookId);
+      setStatus('success');
       setTimeout(() => {
-        setBook({ title: '', author: '', bookCover: null }); // Clear form
-        setAdminState('HOME');
+        resetForm();
       }, 2000);
-    } catch (err) {
-      setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 2000);
-    } finally {
-      setIsSubmitting(false);
+    } catch {
+      setStatus('error');
     }
   };
 
+  const handleDelete = async () => {
+    if (!bookId) return;
+    setStatus('submitting');
+    try {
+      await deleteBookById(bookId);
+      setStatus('success');
+      setTimeout(() => resetForm(), 2000);
+    } catch {
+      setStatus('error');
+    } finally {
+      setStatus('idle');
+    }
+  };
+
+  const resetForm = () => {
+    setBook({ title: '', author: '', bookCover: '', recommendedByName: '' });
+    setAdminState('HOME');
+    resetBookId?.();
+  };
+
   return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-4">Add a New Book</h1>
+    <div className="p-8 w-full">
+      <h2 className="text-2xl font-bold mb-4">{bookId ? 'Update Book' : 'Add a New Book'}</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-bold mb-2" htmlFor="title">
-              Title
-            </label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+
+        {['title', 'author', 'bookCover', 'recommendedByName'].map((field) => (
+          <div key={field}>
+            <label className='block text-sm font-bold mb-2' htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
             <input
-              id="title"
-              name="title"
-              type="text"
+              id={field}
+              name={field}
               className="w-full p-2 border rounded text-black"
-              value={book.title}
+              value={(book as any)[field]}
               onChange={handleChange}
               required
             />
           </div>
+        ))}
 
-          <div>
-            <label className="block text-sm font-bold mb-2" htmlFor="author">
-              Author
-            </label>
-            <input
-              id="author"
-              name="author"
-              type="text"
-              className="w-full p-2 border rounded text-black"
-              value={book.author}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        <div className='flex justify-between'>
+          <button disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Submitting...' : bookId ? 'Update Book' : 'Add Book'}
+          </button>
 
-          <div>
-            <label className="block text-sm font-bold mb-2" htmlFor="bookCover">
-              Book Cover
-            </label>
-            <input
-              id="bookCover"
-              name="bookCover"
-              type="file"
-              className="w-full p-2 border rounded"
-              accept="image/*"
-              onChange={handleFileChange}
-              required
-            />
-          </div>
-
-          <div className='flex justify-between'>
+          {bookId && (
             <button
-              type="submit"
-              className={`${success ? 'bg-green-600' : 'bg-blue-500'} ${error ? 'bg-red-600' : 'bg-blue-500'} p-2 text-white rounded hover:bg-blue-600`}
-              disabled={isSubmitting}
+              type="button"
+              className="bg-red-600 p-2 text-white rounded hover:bg-red-500"
+              onClick={handleDelete}
+              disabled={status === 'submitting'}
             >
-              {isSubmitting ? 'Adding...' : 'Add Book'}
+              Delete Book
             </button>
+          )}
 
-            <button
-              type="submit"
-              className="p-2 text-white hover:text-blue-500"
-              onClick={() => setAdminState('HOME')}
-            >
-              Go back...
-            </button>
-          </div>
+          <button
+            type="button"
+            className="p-2 text-blue-700 hover:text-blue-500"
+            onClick={() => {
+              setAdminState('HOME')
+              if (resetBookId) resetBookId();
+            }}
+          >
+            Go back...
+          </button>
+        </div>
 
-        </form>
-      </div>
+      </form>
+    </div>
   );
 }
