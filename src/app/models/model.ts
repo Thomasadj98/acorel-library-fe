@@ -7,4 +7,6 @@ export interface Book {
   recommendedByName: string;
 }
 
+export type NewBook = Omit<Book, 'id' | 'available'>;
+
 export type AdminEditState = 'HOME' | 'ADD' | 'UPDATE';
