@@ -10,3 +10,14 @@ export interface Book {
 export type NewBook = Omit<Book, 'id' | 'available'>;
 
 export type AdminEditState = 'HOME' | 'ADD' | 'UPDATE';
+
+export interface Reservation {
+  id: number;
+  bookId: number;
+  book: Book;
+  reservedByName: string;
+  reservedByEmail: string;
+  reservedDate: string;
+}
+
+export type NewReservation= Omit<Reservation, 'id' | 'reservedDate' | 'book'>;

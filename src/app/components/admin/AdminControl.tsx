@@ -1,6 +1,6 @@
 'use client'
 import {useState} from "react";
-import AdminBookForm from "@/app/components/AdminControl/AdminAddBookForm";
+import AdminBookForm from "@/app/components/admin/AdminAddBookForm";
 import {AdminEditState} from "@/app/models/model";
 
 export default function AdminControl() {
