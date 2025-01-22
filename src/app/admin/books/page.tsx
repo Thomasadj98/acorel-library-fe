@@ -1,4 +1,4 @@
-import AdminControl from "@/app/components/AdminControl/AdminControl";
+import AdminControl from "@/app/components/admin/AdminControl";
 
 export default function Home() {
   return (

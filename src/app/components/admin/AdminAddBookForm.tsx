@@ -28,7 +28,7 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setBook((prev) => ({ ...prev, [name]: value.trim() }));
+    setBook((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle form submission
@@ -79,7 +79,7 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
               id={field}
               name={field}
               className="w-full p-2 border rounded text-black"
-              value={(book as any)[field]}
+              value={(book as never)[field]}
               onChange={handleChange}
               required
             />
