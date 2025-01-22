@@ -9,7 +9,7 @@ export const fetchAllReservations = async (): Promise<Reservation[]> => {
   return response.json();
 };
 
-export const saveReservation = async (reservation: NewReservation): Promise<void> => {
+export const saveReservation = async (reservation: NewReservation): Promise<Reservation> => {
   const url = 'http://localhost:8080/reservations';
   const method = 'POST';
   const response = await fetch(url, {
@@ -18,6 +18,7 @@ export const saveReservation = async (reservation: NewReservation): Promise<void
     body: JSON.stringify(reservation),
   });
   if (!response.ok) throw new Error(`Failed to add book.`);
+  return response.json();
 };
 
 export const deleteReservationById = async (reservationId: number): Promise<void> => {

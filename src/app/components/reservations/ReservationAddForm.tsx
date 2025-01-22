@@ -1,13 +1,14 @@
 import {useState, useEffect} from "react";
-import {Book} from "@/app/models/model";
+import {Book, Reservation} from "@/app/models/model";
 import {fetchAllBooks} from "@/app/api/apiEndpointsBook";
 import {saveReservation} from "@/app/api/apiEndpointsReservation";
 
 type ReservationAddFormProps = {
   closeModal: () => void;
+  onAddReservation: (newReservation: Reservation) => void;
 }
 
-export default function ReservationAddForm({closeModal}: ReservationAddFormProps) {
+export default function ReservationAddForm({closeModal, onAddReservation}: ReservationAddFormProps) {
   const [books, setBooks] = useState<Book[]>([]);
   const [bookId, setBookId] = useState("");
   const [reservedBy, setReservedBy] = useState({ reservedByName: '', reservedByEmail: '' });
@@ -34,7 +35,8 @@ export default function ReservationAddForm({closeModal}: ReservationAddFormProps
     const newReservation = { ...reservedBy, bookId: parseInt(bookId, 10), reservedDate: formattedDate  };
 
     try {
-      await saveReservation(newReservation);
+      await saveReservation(newReservation)
+        .then((data) => onAddReservation(data));
       closeModal();
     } catch {
       console.error('Error saving reservation');

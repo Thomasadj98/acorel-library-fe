@@ -13,6 +13,10 @@ export default function ReservationList() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const handleAddReservation = (newReservation: Reservation) => {
+    setReservations((prev) => [...prev, newReservation]);
+  };
+
   const handleDelete = async (reservationId: number) => {
     try {
       await deleteReservationById(reservationId);
@@ -66,7 +70,7 @@ export default function ReservationList() {
 
 
       <ModalWrapper isOpen={isModalOpen} onClose={closeModal}>
-        <ReservationAddForm closeModal={closeModal}/>
+        <ReservationAddForm closeModal={closeModal} onAddReservation={handleAddReservation} />
       </ModalWrapper>
     </div>
   )
