@@ -5,6 +5,7 @@ export interface Book {
   bookCover: string;
   available: boolean;
   recommendedByName: string;
+  description: string;
 }
 
 export type NewBook = Omit<Book, 'id' | 'available'>;

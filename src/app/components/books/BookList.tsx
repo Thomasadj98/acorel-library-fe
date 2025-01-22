@@ -15,6 +15,7 @@ export default function BookList() {
 
   return (
     <div className="grid grid-cols-4 gap-4">
+      {books.length === 0 && <p>No books found</p>}
       {books && books.map((book: Book, index: number): JSX.Element => (
         <BookListItem key={index} book={book}/>
       ))}

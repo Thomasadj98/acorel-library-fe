@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import {deleteBookById, fetchBookById, saveBook} from '@/app/api/apiEndpointsBook';
 import {AdminEditState, NewBook} from '@/app/models/model';
 
@@ -14,6 +14,7 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
     author: '',
     bookCover: '',
     recommendedByName: '',
+    description: '',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
@@ -26,13 +27,13 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
   }, [bookId]);
 
   // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setBook((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
     try {
@@ -61,7 +62,7 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
   };
 
   const resetForm = () => {
-    setBook({ title: '', author: '', bookCover: '', recommendedByName: '' });
+    setBook({ title: '', author: '', bookCover: '', recommendedByName: '', description: '' });
     setAdminState('HOME');
     resetBookId?.();
   };
@@ -74,7 +75,8 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
 
         {['title', 'author', 'bookCover', 'recommendedByName'].map((field) => (
           <div key={field}>
-            <label className='block text-sm font-bold mb-2' htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <label className='block text-sm font-bold mb-2'
+                   htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
             <input
               id={field}
               name={field}
@@ -85,6 +87,20 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
             />
           </div>
         ))}
+
+        <div>
+          <label className='block text-sm font-bold mb-2'
+                 htmlFor={'description'}>Description</label>
+          <textarea
+            id='description'
+            name='description'
+            className="w-full p-2 border rounded text-black"
+            value={book.description}
+            onChange={handleChange}
+            required
+            rows={10}
+          />
+        </div>
 
         <div className='flex justify-between'>
           <button disabled={status === 'submitting'}>
