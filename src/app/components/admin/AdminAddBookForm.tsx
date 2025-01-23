@@ -68,7 +68,7 @@ export default function AdminBookForm({setAdminState, bookId, resetBookId}: Admi
   };
 
   return (
-    <div className="p-8 w-full">
+    <div className="p-2 md:p-8 w-full">
       <h2 className="text-2xl font-bold mb-4">{bookId ? 'Update Book' : 'Add a New Book'}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">

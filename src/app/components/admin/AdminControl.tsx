@@ -25,7 +25,7 @@ export default function AdminControl() {
   };
 
   return (
-    <div aria-description='Admin control parent' className='rounded w-1/2 p-8 flex justify-center items-center bg-gray-100'>
+    <div aria-description='Admin control parent' className='rounded w-full md:w-1/2 p-8 flex justify-center items-center bg-gray-100'>
       {adminState === 'HOME' &&
           <div className='text-center'>
               <h2 className='text-2xl font-bold mb-4'>What do you want to do?</h2>
