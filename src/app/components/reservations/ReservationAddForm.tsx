@@ -93,7 +93,7 @@ export default function ReservationAddForm({closeModal, onAddReservation}: Reser
       <div>
         <button
           type="submit"
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm rounded-md text-white font-bold bg-blue-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
+          className="inline-flex justify-center w-full md:w-3/4 py-2 px-4 border border-transparent shadow-sm text-sm rounded-md text-white font-bold bg-blue-700 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
         >
           Add Reservation
         </button>

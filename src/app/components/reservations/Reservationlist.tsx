@@ -35,7 +35,7 @@ export default function ReservationList() {
   return (
     <div>
       <div className='flex gap-4 items-start'>
-        <h1 className='text-4xl font-bold mb-8'>Current reservations</h1>
+        <h1 className='text-3xl md:text-4xl font-bold mb-8'>Current reservations</h1>
         <button onClick={() => openModal()}>
           <Icon iconName={'add'} className={'text-blue-700 hover:text-blue-500 mt-1'}/>
         </button>
@@ -45,21 +45,24 @@ export default function ReservationList() {
 
       {reservations.length > 0 && (
         <div className='w-full'>
-          <div className='grid grid-cols-4 gap-6 border-b mb-2'>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-x-2 md:gap-x-4 border-b'>
             <span className='font-bold'>Title</span>
+            <span className='font-bold hidden md:block'>Date</span>
             <span className='font-bold'>Reserved by</span>
-            <span className='font-bold'>Reserved by email</span>
-            <span className='font-bold'>Date</span>
+            <span className='font-bold hidden md:block'>Reserved by email</span>
           </div>
           {reservations && reservations.map((reservation: Reservation, index: number) => (
-            <div key={index} className='grid relative grid-cols-4 gap-6 mb-2'>
-              <span>{reservation.book.title}</span>
+            <div
+              key={index}
+              className={'grid relative grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 p-1' + (index % 2 === 0 ? ' bg-blue-50' : '')}
+            >
+              <span className='min-h-12 md:min-h-0'>{reservation.book.title}</span>
+              <span className='hidden md:block'>{reservation.reservedDate}</span>
               <span>{reservation.reservedByName}</span>
-              <span>{reservation.reservedByEmail}</span>
-              <span>{reservation.reservedDate}</span>
+              <span className='hidden md:block'>{reservation.reservedByEmail}</span>
               <button
                 onClick={() => handleDelete(reservation.id)}
-                className='absolute right-0 top-0'
+                className='absolute right-4 top-4 md:right-1 md:top-1'
               >
                 <Icon iconName={'delete'} fontSize={24} className={'text-blue-700 hover:text-blue-500'}/>
               </button>
@@ -70,8 +73,8 @@ export default function ReservationList() {
 
 
       <ModalWrapper isOpen={isModalOpen} onClose={closeModal}>
-        <ReservationAddForm closeModal={closeModal} onAddReservation={handleAddReservation} />
-      </ModalWrapper>
+          <ReservationAddForm closeModal={closeModal} onAddReservation={handleAddReservation} />
+        </ModalWrapper>
     </div>
   )
 }
