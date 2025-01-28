@@ -1,4 +1,4 @@
-import logo from '@/app/assets/images/logo_Acorel.png';
+import logo from '../../assets/images/Logo_Acorel.png';
 import Image from "next/image";
 
 export default function Header() {
