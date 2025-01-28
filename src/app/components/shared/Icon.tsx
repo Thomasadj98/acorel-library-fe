@@ -7,7 +7,7 @@ interface IconProps {
 export default function Icon({iconName, fontSize = 32, className}: IconProps) {
   return (
     <span
-      className={"material-symbols-outlined " + className}
+      className={"material-icons-outlined " + className}
       style={{fontSize: `${fontSize}px`}}
     >
       {iconName}
