@@ -1,5 +1,5 @@
 'use client'
-import {ReactNode, useEffect} from "react";
+import {ReactNode, useEffect, MouseEvent} from "react";
 import Icon from "@/app/components/shared/Icon";
 import {motion} from "framer-motion";
 import {AnimatePresence} from "framer-motion";
@@ -38,7 +38,7 @@ export default function ModalWrapper({isOpen, onClose, children}: ModalWrapperPr
             {/* Modal Content */}
             <motion.div
               key={'modal-content'}
-              onClick={(e: MouseEvent) => e.stopPropagation()}
+              onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
               className="fixed bottom-0 left-0 left-1-8 bg-white w-full min-h-80 z-50 rounded-lg shadow-lg overflow-auto md:w-3/4 md:bottom-4"
               initial={{y: "100%"}}
               animate={{y: "0%"}}
